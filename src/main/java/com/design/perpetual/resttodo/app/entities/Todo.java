@@ -48,6 +48,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Todo.findByDueBy", query = "SELECT t FROM Todo t WHERE t.dueBy = :dueBy"),
     @NamedQuery(name = "Todo.findByIsComplete", query = "SELECT t FROM Todo t WHERE t.isComplete = :isComplete")})
 public class Todo implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 4)
+    @Column(name = "priority", nullable = false, length = 4)
+    private String priority;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -182,6 +187,14 @@ public class Todo implements Serializable {
     @Override
     public String toString() {
         return "com.design.perpetual.resttodo.app.entities.Todo[ id=" + id + " ]";
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
     
 }

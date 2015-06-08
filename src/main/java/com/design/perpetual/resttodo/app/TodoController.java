@@ -53,8 +53,9 @@ public class TodoController {
 
     @RequestMapping(value = "/todo/edit", method = RequestMethod.PUT,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public void editTodo(@RequestBody Todo todo) {
+    public Todo editTodo(@RequestBody Todo todo) {
         todoService.editTodo(todo);
+        return todoService.getTodo(todo.getId());
     }
 
     @RequestMapping(value = "/todo/delete/{id:\\d+}", method = RequestMethod.DELETE)

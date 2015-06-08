@@ -1,4 +1,4 @@
-DROP TABLE if exists household.todo cascade;
+﻿DROP TABLE if exists household.todo cascade;
 DROP TABLE if exists household.household_member cascade;
 
 create table household.household_member (
@@ -16,6 +16,7 @@ create table household.todo (
 	created_by varchar(128) not null references household.household_member(email) on delete cascade on update cascade,
 	created_on timestamp without time zone not null default now(),
 	value text not null,
+	priority varchar(4) not null default 'LOW' check(priority = 'LOW' or priority = 'MED' or priority = 'HIGH'),
 	due_by timestamp without time zone default null,
 	is_complete boolean default false
 ) without oids;
