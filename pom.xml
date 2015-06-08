@@ -12,6 +12,7 @@
         <spring.version>4.1.6.RELEASE</spring.version>
         <java.version>${maven.compiler.source}</java.version>
         <eclipse.persistence.version>2.5.2</eclipse.persistence.version>
+        <start-class>com.design.perpetual.resttod.Application</start-class>
     </properties>
     
     <parent>

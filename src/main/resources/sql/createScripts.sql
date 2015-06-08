@@ -1,4 +1,3 @@
-﻿
 DROP TABLE if exists household.todo cascade;
 DROP TABLE if exists household.household_member cascade;
 
