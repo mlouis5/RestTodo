@@ -6,6 +6,7 @@
 package com.design.perpetual.resttodo.app.pojos;
 
 import com.design.perpetual.resttodo.app.entities.Todo;
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -27,7 +28,9 @@ public class TodoDTO {
     }
 
     public void setTodos(List<Todo> todos) {
-        this.todos = todos;
+        if(Objects.nonNull(todos)){            
+            this.todos = Lists.newArrayList(todos.stream().filter(t -> !t.getIsRemoved()).iterator());
+        }
     }
 
     public void addTodo(Todo todo) {

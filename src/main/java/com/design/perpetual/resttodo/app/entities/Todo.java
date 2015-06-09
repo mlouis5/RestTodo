@@ -5,7 +5,6 @@
  */
 package com.design.perpetual.resttodo.app.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
@@ -48,6 +47,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Todo.findByDueBy", query = "SELECT t FROM Todo t WHERE t.dueBy = :dueBy"),
     @NamedQuery(name = "Todo.findByIsComplete", query = "SELECT t FROM Todo t WHERE t.isComplete = :isComplete")})
 public class Todo implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "is_removed", nullable = false)
+    private boolean isRemoved;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 4)
@@ -195,6 +198,14 @@ public class Todo implements Serializable {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public boolean getIsRemoved() {
+        return isRemoved;
+    }
+
+    public void setIsRemoved(boolean isRemoved) {
+        this.isRemoved = isRemoved;
     }
     
 }
