@@ -4,7 +4,8 @@ DROP TABLE if exists household.household_member cascade;
 create table household.household_member (
 	email varchar(128) not null primary key,
 	fName varchar(77) not null,
-	lName varchar(77) not null	
+	lName varchar(77) not null,
+	pin varchar(32) not null	
 ) without oids;
 alter table household.household_member owner to postgres;
 
@@ -18,7 +19,8 @@ create table household.todo (
 	value text not null,
 	priority varchar(4) not null default 'LOW' check(priority = 'LOW' or priority = 'MED' or priority = 'HIGH'),
 	due_by timestamp without time zone default null,
-	is_complete boolean default false
+	is_complete boolean default false,
+	is_removed boolean default false not null
 ) without oids;
 alter table household.todo owner to postgres;
 
@@ -26,3 +28,4 @@ insert into household.household_member values('macdersonlouis@gmail.com', 'MacDe
 insert into household.todo values(0,'Todo', 'One-Time', 'macdersonlouis@gmail.com', now(), 'buy gift for Fatima', now(), false);
 
 update household.todo set id = 1 where id = 0;
+

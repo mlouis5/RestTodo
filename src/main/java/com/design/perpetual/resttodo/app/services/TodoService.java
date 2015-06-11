@@ -5,11 +5,15 @@
  */
 package com.design.perpetual.resttodo.app.services;
 
+import com.design.perpetual.resttodo.app.entities.HouseholdMember;
 import com.design.perpetual.resttodo.app.pojos.TodoDTO;
 import com.design.perpetual.resttodo.app.entities.Todo;
 import com.design.perpetual.resttodo.app.repositories.TodoRepo;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +33,8 @@ public class TodoService {
         dto.setTodos(todos);
         return dto;
     }
-    
-    public Todo getTodo(int id){
+
+    public Todo getTodo(int id) {
         return repo.find(id);
     }
 
@@ -39,23 +43,39 @@ public class TodoService {
             repo.edit(todo);
         }
     }
-    
-    public void deleteTodo(int id){
+
+    public void deleteTodo(int id) {
         Todo t = repo.find(id);
-        if(Objects.nonNull(t)){
+        if (Objects.nonNull(t)) {
             repo.remove(t);
-        }        
+        }
     }
-    
-    public void addTodo(Todo todo){
-        if(Objects.nonNull(todo)){
+
+    public void addTodo(Todo todo) {
+        if (Objects.nonNull(todo)) {
+            
             repo.create(todo);
         }
     }
-    
-    public void addTodoFlush(Todo todo){
-        if(Objects.nonNull(todo)){
-            repo.createFlush(todo);
+
+    public void addTodoFlush(Todo todo) {
+        if (Objects.nonNull(todo)) {
+            repo.merge(todo);
         }
+    }
+
+    public Todo getLatestTodoForMember(HouseholdMember hm) {
+        if(Objects.isNull(hm)){
+            return null;
+        }
+        CriteriaBuilder cb = repo.getCriteriaBuilder();
+        CriteriaQuery<Todo> cq = repo.getCriteriaQuery();
+        Root<Todo> root = repo.getRoot();
+        cq.select(root)
+                .where(cb.equal(root.get("createdBy")
+                                .get("email"), hm.getEmail()))
+                .orderBy(cb.desc(root.get("id")));
+        List<Todo> list = repo.getCriteriaList(cq);
+        return Objects.nonNull(list) && !list.isEmpty() ? list.get(0) : null;
     }
 }

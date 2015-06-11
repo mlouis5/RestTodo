@@ -5,6 +5,7 @@
  */
 package com.design.perpetual.resttodo.app;
 
+import com.design.perpetual.resttodo.app.entities.HouseholdMember;
 import com.design.perpetual.resttodo.app.pojos.TodoDTO;
 import com.design.perpetual.resttodo.app.entities.Todo;
 import com.design.perpetual.resttodo.app.services.TodoService;
@@ -47,8 +48,13 @@ public class TodoController {
     @RequestMapping(value = "/todo/add", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Todo addTodo(@RequestBody Todo todo) {
+        if(Objects.isNull(todo)){
+            return todo;
+        }
         todoService.addTodoFlush(todo);
-        return todo;
+        
+        Todo newTodo = todoService.getLatestTodoForMember(todo.getCreatedBy());
+        return Objects.nonNull(newTodo) ? newTodo : todo;
     }
 
     @RequestMapping(value = "/todo/edit", method = RequestMethod.PUT,

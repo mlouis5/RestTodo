@@ -45,6 +45,13 @@ public abstract class AbstractRepository<T> {
     }
     
     @Transactional(readOnly = false)
+    public void merge(T entity){
+        if(Objects.nonNull(entity)){
+            em.merge(entity);
+        }
+    }
+    
+    @Transactional(readOnly = false)
     public void createFlush(T entity) {
         if (Objects.nonNull(entity)) {
             em.persist(entity);
