@@ -8,12 +8,14 @@ package com.design.perpetual.resttodo.app.services;
 import com.design.perpetual.resttodo.app.entities.HouseholdMember;
 import com.design.perpetual.resttodo.app.pojos.TodoDTO;
 import com.design.perpetual.resttodo.app.entities.Todo;
+import com.design.perpetual.resttodo.app.pojos.HouseholdMemberDTO;
 import com.design.perpetual.resttodo.app.repositories.TodoRepo;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +28,18 @@ public class TodoService {
 
     @Autowired
     private TodoRepo repo;
+    @Autowired
+    private HouseholdMemberService hms;
+    @Autowired
+    private ObjectFactory<TodoDTO> todoDtos;
 
     public TodoDTO getTodos() {
-        List<Todo> todos = repo.findAll();
-        TodoDTO dto = new TodoDTO();
-        dto.setTodos(todos);
+//        List<Todo> todos = repo.findAll();
+//        TodoDTO dto = new TodoDTO();
+//        dto.setTodos(todos);
+        HouseholdMemberDTO hmd = hms.getHouseholdMembers();
+        TodoDTO dto = todoDtos.getObject();
+        dto.setTodos(hmd.getAllTodos());
         return dto;
     }
 

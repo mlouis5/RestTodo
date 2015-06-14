@@ -8,6 +8,7 @@ package com.design.perpetual.resttodo.app;
 import com.design.perpetual.resttodo.app.entities.HouseholdMember;
 import com.design.perpetual.resttodo.app.pojos.TodoDTO;
 import com.design.perpetual.resttodo.app.entities.Todo;
+import com.design.perpetual.resttodo.app.services.HouseholdMemberService;
 import com.design.perpetual.resttodo.app.services.TodoService;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class TodoController {
 
     @Autowired
     private TodoService todoService;
+    
 
     @RequestMapping(value = "/todo", method = RequestMethod.GET)
     public TodoDTO getTodos() {
