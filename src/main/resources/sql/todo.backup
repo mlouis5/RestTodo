@@ -1,0 +1,182 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+DROP DATABASE household;
+--
+-- Name: household; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE household WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1252' LC_CTYPE = 'English_United States.1252';
+
+
+ALTER DATABASE household OWNER TO postgres;
+
+\connect household
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: household; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA household;
+
+
+ALTER SCHEMA household OWNER TO postgres;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = household, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: household_member; Type: TABLE; Schema: household; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE household_member (
+    email character varying(128) NOT NULL,
+    fname character varying(77) NOT NULL,
+    lname character varying(77) NOT NULL,
+    pin character varying(32) NOT NULL
+);
+
+
+ALTER TABLE household.household_member OWNER TO postgres;
+
+--
+-- Name: todo; Type: TABLE; Schema: household; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE todo (
+    id integer NOT NULL,
+    type character varying(4) NOT NULL,
+    recurrence character varying(15) NOT NULL,
+    created_by character varying(128) NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    value text NOT NULL,
+    due_by timestamp without time zone,
+    is_complete boolean DEFAULT false,
+    priority character varying(4) DEFAULT 'LOW'::character varying NOT NULL,
+    is_removed boolean DEFAULT false NOT NULL,
+    CONSTRAINT todo_priority_check CHECK (((((priority)::text = 'LOW'::text) OR ((priority)::text = 'MED'::text)) OR ((priority)::text = 'HIGH'::text))),
+    CONSTRAINT todo_recurrence_check CHECK (((((((((((recurrence)::text = 'One-Time'::text) OR ((recurrence)::text = 'Daily'::text)) OR ((recurrence)::text = 'Weekly'::text)) OR ((recurrence)::text = 'Bi-Weekly'::text)) OR ((recurrence)::text = 'Semi-Monthly'::text)) OR ((recurrence)::text = 'Monthly'::text)) OR ((recurrence)::text = 'quarterly'::text)) OR ((recurrence)::text = 'Semi-Annually'::text)) OR ((recurrence)::text = 'Annually'::text))),
+    CONSTRAINT todo_type_check CHECK (((((type)::text = 'Todo'::text) OR ((type)::text = 'Note'::text)) OR ((type)::text = 'List'::text)))
+);
+
+
+ALTER TABLE household.todo OWNER TO postgres;
+
+--
+-- Name: todo_id_seq; Type: SEQUENCE; Schema: household; Owner: postgres
+--
+
+CREATE SEQUENCE todo_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE household.todo_id_seq OWNER TO postgres;
+
+--
+-- Name: todo_id_seq; Type: SEQUENCE OWNED BY; Schema: household; Owner: postgres
+--
+
+ALTER SEQUENCE todo_id_seq OWNED BY todo.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: household; Owner: postgres
+--
+
+ALTER TABLE ONLY todo ALTER COLUMN id SET DEFAULT nextval('todo_id_seq'::regclass);
+
+
+--
+-- Data for Name: household_member; Type: TABLE DATA; Schema: household; Owner: postgres
+--
+
+INSERT INTO household_member VALUES ('macdersonlouis@gmail.com', 'MacDerson', 'Louis', '455c31f948773e91caff3a6a1f22456c');
+INSERT INTO household_member VALUES ('mac.louis@live.com', 'Mac', 'Louis', '455c31f948773e91caff3a6a1f22456c');
+INSERT INTO household_member VALUES ('fatima1davis@aol.com', 'Fatima', 'Davis', '564f4bcd11273b8ea6b49fbe2dc2ad1c');
+INSERT INTO household_member VALUES ('samira.f.davis@gmail.com', 'Fatima', 'Davis', '564f4bcd11273b8ea6b49fbe2dc2ad1c');
+
+
+--
+-- Data for Name: todo; Type: TABLE DATA; Schema: household; Owner: postgres
+--
+
+INSERT INTO todo VALUES (9, 'Todo', 'Semi-Monthly', 'mac.louis@live.com', '2015-06-03 12:09:31.194', 'buy printing paper', NULL, false, 'HIGH', false);
+INSERT INTO todo VALUES (8, 'Todo', 'Semi-Monthly', 'samira.f.davis@gmail.com', '2015-06-03 12:09:31.194', 'buy printing paper', NULL, true, 'LOW', false);
+INSERT INTO todo VALUES (7, 'List', 'Bi-Weekly', 'fatima1davis@aol.com', '2015-06-03 12:09:31.194', 'bread, milk, juice, cereal, vegetables', NULL, false, 'HIGH', true);
+INSERT INTO todo VALUES (10, 'Todo', 'One-Time', 'macdersonlouis@gmail.com', '2015-06-11 16:42:15.862', 'adding todo #2', '2015-06-12 00:00:00', false, 'LOW', false);
+INSERT INTO todo VALUES (11, 'Todo', 'One-Time', 'macdersonlouis@gmail.com', '2015-06-11 16:54:20.554', 'new todo #3', '2015-06-11 00:00:00', false, 'HIGH', false);
+INSERT INTO todo VALUES (12, 'Todo', 'One-Time', 'macdersonlouis@gmail.com', '2015-06-11 17:25:24.324', 'test #4', '2015-06-12 00:00:00', false, 'LOW', false);
+INSERT INTO todo VALUES (13, 'Todo', 'One-Time', 'macdersonlouis@gmail.com', '2015-06-11 19:38:48.117', 'test #5', '2015-06-18 00:00:00', true, 'LOW', false);
+INSERT INTO todo VALUES (2, 'Note', 'Daily', 'macdersonlouis@gmail.com', '2015-06-03 12:09:31.194', 'plan party for Fatima', '2015-06-03 12:09:31.194', true, 'HIGH', false);
+INSERT INTO todo VALUES (1, 'Todo', 'One-Time', 'macdersonlouis@gmail.com', '2015-06-11 16:33:02.307', 'test add todo', '2015-06-12 00:00:00', false, 'MED', false);
+
+
+--
+-- Name: todo_id_seq; Type: SEQUENCE SET; Schema: household; Owner: postgres
+--
+
+SELECT pg_catalog.setval('todo_id_seq', 13, true);
+
+
+--
+-- Name: household_member_pkey; Type: CONSTRAINT; Schema: household; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY household_member
+    ADD CONSTRAINT household_member_pkey PRIMARY KEY (email);
+
+
+--
+-- Name: todo_pkey; Type: CONSTRAINT; Schema: household; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY todo
+    ADD CONSTRAINT todo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: todo_created_by_fkey; Type: FK CONSTRAINT; Schema: household; Owner: postgres
+--
+
+ALTER TABLE ONLY todo
+    ADD CONSTRAINT todo_created_by_fkey FOREIGN KEY (created_by) REFERENCES household_member(email) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
