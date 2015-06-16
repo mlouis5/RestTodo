@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author MacDerson
  */
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 @Entity
 @Table(name = "todo", catalog = "household", schema = "household")
 @XmlRootElement

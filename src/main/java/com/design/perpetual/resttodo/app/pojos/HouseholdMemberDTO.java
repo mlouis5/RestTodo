@@ -38,7 +38,7 @@ public class HouseholdMemberDTO {
     public List<Todo> getAllTodos(){
         final List<Todo> allTodos = new ArrayList();
         householdMembers.forEach((HouseholdMember hm) -> {
-            allTodos.addAll(ListUtils.union(allTodos, hm.getTodoList()));
+            allTodos.addAll(hm.getTodoList());
         });
         return allTodos;
     }
