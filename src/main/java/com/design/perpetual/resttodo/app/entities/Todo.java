@@ -5,11 +5,13 @@
  */
 package com.design.perpetual.resttodo.app.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.design.perpetual.resttodo.app.Mergeable;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,6 +30,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
@@ -46,7 +49,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Todo.findByValue", query = "SELECT t FROM Todo t WHERE t.value = :value"),
     @NamedQuery(name = "Todo.findByDueBy", query = "SELECT t FROM Todo t WHERE t.dueBy = :dueBy"),
     @NamedQuery(name = "Todo.findByIsComplete", query = "SELECT t FROM Todo t WHERE t.isComplete = :isComplete")})
-public class Todo implements Serializable {
+public class Todo implements Serializable, Mergeable<Todo> {
+    @Size(max = 128)
+    @Column(name = "send_to", length = 128)
+    private String sendTo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "is_removed", nullable = false)
@@ -207,5 +214,66 @@ public class Todo implements Serializable {
     public void setIsRemoved(boolean isRemoved) {
         this.isRemoved = isRemoved;
     }
+
+    @Override
+    public boolean merge(Todo t) {
+        boolean merged = false;
+        if (Objects.nonNull(t)) {
+            Field[] thisFields = getFields(this);
+            Field[] paramFields = getFields(t);
+            for (Field f : thisFields) {
+                f.setAccessible(true);
+                Column col = f.getAnnotation(Column.class);
+                if (Objects.nonNull(col)) {
+                    for(Field pf : paramFields){
+                        pf.setAccessible(true);
+                        if(f.getName().equals(pf.getName())){
+                            try {
+                                Object thisVal = f.get(this);
+                                Object parVal = pf.get(t);
+                                if(!Objects.equals(thisVal, parVal)){
+                                    f.set(this, parVal);
+                                    if(!merged){
+                                        merged = !merged;
+                                    }
+                                }
+                            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                                Logger.getLogger(Todo.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return merged;
+    }
+
+    private Field[] getFields(Todo t) {
+        Class<?> cls = t.getClass();
+        Field[] fields = cls.getDeclaredFields();
+        Field[] supFields = cls.getSuperclass().getDeclaredFields();
+        return ArrayUtils.addAll(fields, supFields);       
+    }
+
+    public String getSendTo() {
+        return sendTo;
+    }
+
+    public void setSendTo(String sendTo) {
+        this.sendTo = sendTo;
+    }
     
+    public String[] modifiedValue(){
+        switch(this.type){
+            case "Todo":
+            case "Note":{
+                return new String[]{this.value};
+            }
+            case "List":{
+                return this.value.split(",\\s*");
+            }
+            default: return new String[]{};
+        }
+    }
+
 }

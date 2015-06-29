@@ -10,7 +10,43 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath com.design.perpetual.resttodo.Application</exec.args>
+                <exec.args>-Dprop="todo" -Dprops.properties="C:\Property\props.properties" -Dsecret.key="da4bd200b3e3592ccb8862de1357840f" -DdbName="household" -classpath %classpath com.design.perpetual.resttodo.Application</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-sourc download</actionName>
+            <displayName>sourc download</displayName>
+            <goals>
+                <goal>dependency:sources</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Dprop="todo" -Dprops.properties="C:\Property\props.properties" -Dsecret.key="da4bd200b3e3592ccb8862de1357840f" -DdbName="household" -classpath %classpath com.design.perpetual.resttodo.Application</exec.args>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Dprop="todo" -Dprops.properties="C:\Property\props.properties" -Dsecret.key="da4bd200b3e3592ccb8862de1357840f" -DdbName="household" -classpath %classpath com.design.perpetual.resttodo.Application</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

@@ -6,17 +6,13 @@
 package com.design.perpetual.resttodo;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  *
  * @author MacDerson
  */
 @SpringBootApplication
-//@Import({DataSourceConfig.class})
 public class Application {
     
     public static void main(String[] args){

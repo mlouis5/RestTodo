@@ -34,12 +34,12 @@ public class TodoService {
     private ObjectFactory<TodoDTO> todoDtos;
 
     public TodoDTO getTodos() {
-//        List<Todo> todos = repo.findAll();
-//        TodoDTO dto = new TodoDTO();
-//        dto.setTodos(todos);
-        HouseholdMemberDTO hmd = hms.getHouseholdMembers();
-        TodoDTO dto = todoDtos.getObject();
-        dto.setTodos(hmd.getAllTodos());
+        List<Todo> todos = repo.findAll();
+        TodoDTO dto = new TodoDTO();
+        dto.setTodos(todos);
+//        HouseholdMemberDTO hmd = hms.getHouseholdMembers();
+//        TodoDTO dto = todoDtos.getObject();
+//        dto.setTodos(hmd.getAllTodos());
         return dto;
     }
 
@@ -61,8 +61,7 @@ public class TodoService {
     }
 
     public void addTodo(Todo todo) {
-        if (Objects.nonNull(todo)) {
-            
+        if (Objects.nonNull(todo)) {            
             repo.create(todo);
         }
     }

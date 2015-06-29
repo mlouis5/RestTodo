@@ -64,7 +64,6 @@ public class HouseholdMember implements Serializable {
     @Column(name = "lname", nullable = false, length = 77)
     private String lname;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy", fetch = FetchType.EAGER)
-//    @JsonManagedReference
     private List<Todo> todoList;
 
     public HouseholdMember() {

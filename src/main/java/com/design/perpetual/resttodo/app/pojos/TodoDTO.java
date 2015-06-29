@@ -7,6 +7,7 @@ package com.design.perpetual.resttodo.app.pojos;
 
 import com.design.perpetual.resttodo.app.entities.Todo;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -21,7 +22,14 @@ import org.springframework.stereotype.Component;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TodoDTO {
 
-    List<Todo> todos;
+    private List<Todo> todos;
+    
+    public TodoDTO(){}
+    
+    public TodoDTO(Todo todo){
+        todos = new ArrayList(1);
+        todos.add(todo);
+    }
 
     public List<Todo> getTodos() {
         return todos;
@@ -35,7 +43,7 @@ public class TodoDTO {
 
     public void addTodo(Todo todo) {
         if (Objects.nonNull(todos) && Objects.nonNull(todo)) {
-            this.todos.add(todo);
+            this.todos.add(todo);            
         }
     }
 
@@ -56,6 +64,10 @@ public class TodoDTO {
         }
         final TodoDTO other = (TodoDTO) obj;
         return Objects.equals(todos, other.todos);
+    }
+    
+    public boolean isSingle(){
+        return todos.size() == 1;
     }
 
 }
