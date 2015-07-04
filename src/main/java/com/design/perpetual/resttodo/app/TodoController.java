@@ -32,7 +32,6 @@ public class TodoController {
     private TodoService todoService;
     @Autowired
     private MailService mailService;
-    
 
     @RequestMapping(value = "/todo", method = RequestMethod.GET)
     public TodoDTO getTodos() {
@@ -53,11 +52,11 @@ public class TodoController {
     @RequestMapping(value = "/todo/add", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Todo addTodo(@RequestBody Todo todo) {
-        if(Objects.isNull(todo)){
+        if (Objects.isNull(todo)) {
             return todo;
         }
         todoService.addTodoFlush(todo);
-        
+
         Todo newTodo = todoService.getLatestTodoForMember(todo.getCreatedBy());
         return Objects.nonNull(newTodo) ? newTodo : todo;
     }
@@ -68,9 +67,9 @@ public class TodoController {
         System.out.println("Id: " + todo.getId());
         System.out.println("isRemoved: " + todo.getIsRemoved());
         Todo managedTodo = getTodo(todo.getId());
-        if(Objects.nonNull(managedTodo)){
+        if (Objects.nonNull(managedTodo)) {
             boolean isMerged = managedTodo.merge(todo);
-            if(isMerged){
+            if (isMerged) {
                 todoService.addTodoFlush(managedTodo);
             }
         }
@@ -80,7 +79,7 @@ public class TodoController {
     @RequestMapping(value = "/todo/delete/{id:\\d+}", method = RequestMethod.DELETE)
     public void deleteTodo(@PathVariable(value = "id") Integer id) {
         if (Objects.nonNull(id)) {
-            
+
             todoService.deleteTodo(id);
         }
     }
@@ -90,21 +89,24 @@ public class TodoController {
         TodoDTO dto = getTodos();
         if (Objects.nonNull(dto)) {
             List<Todo> todos = Optional.ofNullable(dto.getTodos()).orElse(new ArrayList());
-            todos.stream().filter(t -> Objects.nonNull(t.getIsComplete()) 
+            todos.stream().filter(t -> Objects.nonNull(t.getIsComplete())
                     && t.getIsComplete()).forEach(t -> {
-                deleteTodo(t.getId());
-            });
+                        deleteTodo(t.getId());
+                    });
         }
         return getTodos();
     }
-    
+
     @RequestMapping(value = "/todo/email", method = RequestMethod.PUT,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Todo emailTodo(@RequestBody Todo todo) {
-        Todo managedTodo = editTodo(todo);
-        if(Objects.nonNull(managedTodo)){
-            mailService.sendMail(todo);
+        String sendTo = todo.getSendTo();
+        boolean sent = false;
+        if (Objects.nonNull(sendTo) && !sendTo.isEmpty()) {
+            if (Objects.nonNull(todo)) {
+                sent = mailService.sendMail(todo);
+            }
         }
-        return managedTodo;
+        return sent ? todo : null;
     }
 }
